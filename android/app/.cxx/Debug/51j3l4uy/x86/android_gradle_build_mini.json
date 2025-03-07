@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/home/angera/development/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/angera/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/angera/Projects/PetroFlow/petroflow_mobile/android/app/.cxx/Debug/51j3l4uy/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/angera/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/angera/Projects/PetroFlow/petroflow_mobile/android/app/.cxx/Debug/51j3l4uy/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

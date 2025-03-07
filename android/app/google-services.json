@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "357456524181",
+    "project_id": "petroflowservices-b10ff",
+    "storage_bucket": "petroflowservices-b10ff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357456524181:android:e2b9609b0c2ddbfa337c9c",
+        "android_client_info": {
+          "package_name": "com.angerasilas.petroflow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYDbBi7Y0BnQKfmXPh5bDQI7TvHfxyzoo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -87,7 +87,7 @@ class ApiService {
     }
   }
 
-  /// Fetch a list of items from an endpoint and map them to a model
+  /// Fetch a list of items from an endpoint and map them to a models
   Future<List<T>> fetchList<T>(
       String endpoint, T Function(Map<String, dynamic>) fromJson) async {
     try {

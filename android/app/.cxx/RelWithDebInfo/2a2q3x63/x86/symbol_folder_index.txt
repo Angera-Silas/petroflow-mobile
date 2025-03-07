@@ -1,0 +1,1 @@
+/home/angera/Projects/PetroFlow/petroflow_mobile/build/app/intermediates/cxx/RelWithDebInfo/2a2q3x63/obj/x86

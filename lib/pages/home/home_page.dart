@@ -1,142 +1,142 @@
 import 'package:flutter/material.dart';
-import 'package:petroflow/components/cards/dashboard_card.dart';
-import 'package:petroflow/components/tables/paginated_table.dart';
-import 'package:petroflow/pages/home/home_controller.dart';
+import 'package:petroflow/constants/my_colors.dart' show DynamicColors;
+import 'package:petroflow/pages/home/discover.dart';
+import 'package:petroflow/pages/home/home_screen.dart';
+import 'package:petroflow/pages/home/user_account.dart';
 import 'package:petroflow/pages/sales/sales_page.dart';
-import 'package:petroflow/utils/dummy_data.dart';
-import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  Future<String?> _getUserRole() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('authRole') ?? 'user';
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => HomeController(),
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false, // Removes the back button
-          leading: IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              // Handle menu button press
-            },
-          ),
-          title: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "PetroFlow Dashboard",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "Streamlining Your Petrol Station Operations!",
-                style: TextStyle(fontSize: 14.0),
-              ),
-            ],
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {
-                // Handle notifications button press
-              },
-            ),
-          ],
+    return FutureBuilder<String?>(
+      future: _getUserRole(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return const Scaffold(
+            body: Center(child: Text("Error loading user role")),
+          );
+        }
+
+        String userRole = snapshot.data ?? 'user';
+        return HomeScreenWithNavigation(userRole: userRole);
+      },
+    );
+  }
+}
+
+class HomeScreenWithNavigation extends StatefulWidget {
+  final String userRole;
+
+  const HomeScreenWithNavigation({super.key, required this.userRole});
+
+  @override
+  _HomeScreenWithNavigationState createState() =>
+      _HomeScreenWithNavigationState();
+}
+
+class _HomeScreenWithNavigationState extends State<HomeScreenWithNavigation> {
+  int _selectedIndex = 0;
+  late List<Widget> _pages;
+  late List<BottomNavigationBarItem> _navItems;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeNavigation();
+  }
+
+  void _initializeNavigation() {
+    _pages = [
+      const HomeScreen(),
+      const DiscoverScreen(),
+      const AccountScreen(),
+    ];
+    _navItems = [
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home),
+        label: "Home",
+        backgroundColor: Colors.transparent,
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.explore),
+        label: "Discover",
+        backgroundColor: Colors.transparent,
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.person),
+        label: "Account",
+        backgroundColor: Colors.transparent,
+      ),
+    ];
+
+    if (widget.userRole == 'ACCOUNTANT') {
+      _pages.insert(1, SalesPage(userRole: 'ACCOUNTANT'));
+      _navItems.insert(
+        1,
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.receipt),
+          label: "Reports",
+          backgroundColor: Colors.transparent,
         ),
-        body: Consumer<HomeController>(
-          builder: (context, controller, child) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Cards Grid (Reduced Card Height)
-                  GridView.builder(
-                    shrinkWrap: true, // ✅ Allow GridView to fit content
-                    physics:
-                        const NeverScrollableScrollPhysics(), // Prevents internal scrolling
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 1.1, // ✅ Adjusted to reduce height
-                    ),
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      final items = [
-                        {
-                          "title": "Total Sales",
-                          "icon": Icons.shopping_cart,
-                          "value": controller.totalSales.toString(),
-                          "route": const SalesPage(),
-                        },
-                        {
-                          "title": "Revenue",
-                          "icon": Icons.attach_money,
-                          "value": "\ KES${controller.revenue}",
-                        },
-                        {
-                          "title": "Customers Served",
-                          "icon": Icons.people,
-                          "value": controller.totalCustomers.toString(),
-                        },
-                        {
-                          "title": "Orders",
-                          "icon": Icons.receipt,
-                          "value": "234",
-                        },
-                      ];
+      );
+    } else if (widget.userRole == 'SYSTEM_ADMIN') {
+      _pages.insert(1, SalesPage(userRole: 'SYSTEM_ADMIN'));
+      _navItems.insert(
+        1,
+        const BottomNavigationBarItem(
+            backgroundColor: Colors.transparent,
+            icon: Icon(Icons.admin_panel_settings),
+            label: "Organization"),
+      );
+    } else {
+      _pages.insert(1, SalesPage(userRole: widget.userRole.toString()));
+      _navItems.insert(
+        1,
+        const BottomNavigationBarItem(
+            backgroundColor: Colors.transparent,
+            icon: Icon(Icons.shopping_cart),
+            label: "Sales"),
+      );
+    }
+  }
 
-                      return DashboardCard(
-                        title: items[index]["title"] as String,
-                        icon: items[index]["icon"] as IconData,
-                        value: items[index]["value"] as String,
-                        onTap: () {
-                          if (items[index]["route"] != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    items[index]["route"] as Widget,
-                              ),
-                            );
-                          }
-                        },
-                      );
-                    },
-                  ),
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
-                  const SizedBox(height: 20),
-
-                  // Sales Chart
-                  Container(
-                    height: 220,
-                    padding: const EdgeInsets.all(16),
-                    child: SfCartesianChart(
-                      primaryXAxis: CategoryAxis(),
-                      title: ChartTitle(text: 'Sales Progress'),
-                      series: <CartesianSeries<SalesData, String>>[
-                        LineSeries<SalesData, String>(
-                          dataSource: controller.salesChartData,
-                          xValueMapper: (SalesData sales, _) => sales.day,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Paginated Table
-                  PaginatedTable(data: controller.transactions),
-                ],
-              ),
-            );
-          },
-        ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: DynamicColors.bottomNavColor(context),
+        items: _navItems,
       ),
     );
   }

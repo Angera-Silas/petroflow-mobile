@@ -1,0 +1,28 @@
+{
+  "buildFiles": [
+    "/home/angera/development/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/angera/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/angera/Projects/PetroFlow/petroflow_mobile/android/app/.cxx/Debug/51j3l4uy/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/angera/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/angera/Projects/PetroFlow/petroflow_mobile/android/app/.cxx/Debug/51j3l4uy/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {},
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/angera/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/angera/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": []
+}

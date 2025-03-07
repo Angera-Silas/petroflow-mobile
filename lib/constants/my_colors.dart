@@ -136,4 +136,20 @@ class DynamicColors {
         ? kDarkButtonHoverColor
         : kLightButtonHoverColor;
   }
+
+  static Color transparentColor(BuildContext context) {
+    return kTransparentColor;
+  }
+
+  static Color homeCardColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? kDarkActiveCardColor
+        : kLightSecondaryColor;
+  }
+
+  static Color bottomNavColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? kDarkPrimaryColor
+        : kLightPrimaryColor;
+  }
 }

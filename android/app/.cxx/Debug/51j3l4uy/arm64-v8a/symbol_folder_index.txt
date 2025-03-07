@@ -1,0 +1,1 @@
+/home/angera/Projects/PetroFlow/petroflow_mobile/build/app/intermediates/cxx/Debug/51j3l4uy/obj/arm64-v8a
