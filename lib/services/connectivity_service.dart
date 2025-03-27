@@ -1,9 +1,14 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:petroflow/services/db_service.dart';
 import 'package:petroflow/services/sync_service.dart';
 import 'package:workmanager/workmanager.dart';
 
 class ConnectivityService {
-  static void initBackgroundSync() {
+  static late SyncService _syncService;
+
+  static void initBackgroundSync(AppDatabase database) {
+    _syncService = SyncService(database);
+
     // Initialize WorkManager
     Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 
@@ -18,7 +23,7 @@ class ConnectivityService {
     Connectivity().onConnectivityChanged.listen((result) {
       if (result != ConnectivityResult.none) {
         print("Internet is back! Syncing data...");
-        SyncService.syncData();
+        _syncService.syncData();
       }
     });
   }
@@ -27,7 +32,10 @@ class ConnectivityService {
 // WorkManager background task handler
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    await SyncService.syncData();
+    final database = AppDatabase(); // Create database instance
+    final syncService = SyncService(database); // Use database in SyncService
+
+    await syncService.syncData(); // Perform sync
     return Future.value(true);
   });
 }

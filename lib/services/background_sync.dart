@@ -1,10 +1,15 @@
+import 'package:petroflow/services/db_service.dart';
 import 'package:petroflow/services/sync_service.dart';
 import 'package:workmanager/workmanager.dart';
 
 const syncTask = "syncTask";
 
 class BackgroundSync {
-  static void initialize() {
+  static late SyncService _syncService;
+
+  static void initialize(AppDatabase database) {
+    _syncService = SyncService(database);
+
     // Initialize WorkManager
     Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 
@@ -20,7 +25,10 @@ class BackgroundSync {
 // WorkManager background task handler
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    await SyncService.syncData();
+    final database = AppDatabase(); // Create database instance
+    final syncService = SyncService(database); // Use database in SyncService
+
+    await syncService.syncData(); // Perform sync
     return Future.value(true);
   });
 }

@@ -7,6 +7,7 @@ import 'package:petroflow/services/db_service.dart';
 
 class EditSalePage extends StatefulWidget {
   final SaleModel sale;
+
   EditSalePage({required this.sale});
 
   @override
@@ -27,27 +28,33 @@ class _EditSalePageState extends State<EditSalePage> {
   @override
   void initState() {
     super.initState();
-    _productNameController =
-        TextEditingController(text: widget.sale.product_name);
+    //_productNameController = TextEditingController(text: widget.sale.productName);
     _unitsSoldController =
-        TextEditingController(text: widget.sale.units_sold.toString());
+        TextEditingController(text: widget.sale.unitsSold.toString());
     _totalAmountBilledController =
-        TextEditingController(text: widget.sale.total_amount_billed.toString());
+        TextEditingController(text: widget.sale.amountBilled.toString());
     _totalAmountPaidController =
-        TextEditingController(text: widget.sale.total_amount_paid.toString());
-    _paymentMode = widget.sale.mode_of_payment;
+        TextEditingController(text: widget.sale.amountPaid.toString());
+    _paymentMode = widget.sale.paymentMethod;
   }
 
   void _updateSale() async {
     if (_formKey.currentState!.validate()) {
       SaleModel updatedSale = SaleModel(
         id: widget.sale.id,
-        timestamp: widget.sale.timestamp,
-        product_name: _productNameController.text,
-        units_sold: double.parse(_unitsSoldController.text),
-        mode_of_payment: _paymentMode,
-        total_amount_billed: double.parse(_totalAmountBilledController.text),
-        total_amount_paid: double.parse(_totalAmountPaidController.text),
+        dateTime: widget.sale.dateTime,
+        productId: widget.sale.productId,
+        employeeNo: widget.sale.employeeNo,
+        sellPointId: widget.sale.sellPointId,
+        shiftId: widget.sale.shiftId,
+        unitsSold: double.parse(_unitsSoldController.text),
+        amountBilled: double.parse(_totalAmountBilledController.text),
+        discount: widget.sale.discount,
+        amountPaid: double.parse(_totalAmountPaidController.text),
+        paymentMethod: _paymentMode,
+        paymentStatus: widget.sale.paymentStatus,
+        balance: widget.sale.balance,
+        status: widget.sale.status,
         synced: false, // Mark as unsynced after edit
       );
 

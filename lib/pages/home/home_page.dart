@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:petroflow/constants/my_colors.dart' show DynamicColors;
 import 'package:petroflow/pages/home/discover.dart';
+import 'package:petroflow/pages/home/home_controller.dart';
 import 'package:petroflow/pages/home/home_screen.dart';
 import 'package:petroflow/pages/home/user_account.dart';
 import 'package:petroflow/pages/sales/sales_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:petroflow/services/db_service.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,31 +16,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<String?> _getUserRole() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('authRole') ?? 'user';
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String?>(
-      future: _getUserRole(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        if (snapshot.hasError) {
-          return const Scaffold(
-            body: Center(child: Text("Error loading user role")),
-          );
-        }
-
-        String userRole = snapshot.data ?? 'user';
-        return HomeScreenWithNavigation(userRole: userRole);
+    return ChangeNotifierProvider(
+      create: (context) {
+        final controller = HomeController(AppDatabase());
+        controller.fetchInitialData(); // Fetch all necessary data
+        return controller;
       },
+      child: Consumer<HomeController>(
+        builder: (context, homeController, child) {
+          if (homeController.isLoading) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          return HomeScreenWithNavigation(userRole: homeController.userRole);
+        },
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:petroflow/components/cards/dashboard_card.dart'
     show DashboardCard;
+import 'package:petroflow/constants/my_colors.dart';
 import 'package:petroflow/pages/sales/list_sales.dart' show SalesListPage;
 import 'package:petroflow/pages/sales/new_sale.dart';
 import 'package:petroflow/pages/sales/sales_controller.dart';
@@ -15,11 +16,12 @@ class SalesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Removes the back button
+        automaticallyImplyLeading: false,
         title: const Text(
           "Sales Management",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        centerTitle: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -37,11 +39,13 @@ class SalesPage extends StatelessWidget {
       ),
       body: Consumer<SalesController>(
         builder: (context, controller, child) {
+          // Fetch sales data when the page is loaded
+          controller.fetchInitialData();
+
           if (controller.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // Define role-based sales options using uppercase keys
           final Map<String, List<Map<String, dynamic>>> roleOptions = {
             "STATION_MANAGER": [
               {
@@ -78,7 +82,7 @@ class SalesPage extends StatelessWidget {
               },
               {
                 "title": "View Sales",
-                "icon": Icons.edit,
+                "icon": Icons.view_list,
                 "route": SalesListPage()
               },
               {
@@ -86,16 +90,16 @@ class SalesPage extends StatelessWidget {
                 "icon": Icons.list,
                 "route": SalesListPage()
               },
-              {
-                "title": "Request Edit",
-                "icon": Icons.edit,
-                "route": SalesListPage()
-              },
-              {
-                "title": "Flag Sale",
-                "icon": Icons.edit,
-                "route": SalesListPage()
-              }
+              // {
+              //   "title": "Request Edit",
+              //   "icon": Icons.edit,
+              //   "route": SalesListPage()
+              // },
+              // {
+              //   "title": "Flag Sale",
+              //   "icon": Icons.edit,
+              //   "route": SalesListPage()
+              // },
             ],
             "DEPARTMENT_MANAGER": [
               {
@@ -170,7 +174,6 @@ class SalesPage extends StatelessWidget {
             ],
           };
 
-          // Default sales options if the role isn't defined
           final List<Map<String, dynamic>> defaultOptions = [
             {
               "title": "View Sales",
@@ -184,7 +187,6 @@ class SalesPage extends StatelessWidget {
             },
           ];
 
-          // Get the correct options based on role
           final salesOptions = roleOptions[userRole] ?? defaultOptions;
 
           return SingleChildScrollView(
@@ -222,7 +224,14 @@ class SalesPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 controller.sales.isEmpty
-                    ? const Center(child: Text("No sales data available"))
+                    ? Center(
+                        child: Text(
+                          "No sales data available",
+                          style: TextStyle(
+                            color: DynamicColors.textColor(context),
+                          ),
+                        ),
+                      )
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -230,8 +239,8 @@ class SalesPage extends StatelessWidget {
                         itemBuilder: (context, index) {
                           final sale = controller.sales[index];
                           return ListTile(
-                            title: Text("Amount: \$${sale.total_amount_paid}"),
-                            subtitle: Text("Date: ${sale.timestamp}"),
+                            title: Text("Amount: \$${sale.amountPaid}"),
+                            subtitle: Text("Date: ${sale.dateTime}"),
                             trailing: sale.synced
                                 ? const Icon(Icons.check, color: Colors.green)
                                 : const Icon(Icons.sync, color: Colors.red),

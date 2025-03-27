@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:petroflow/components/tables/paginated_table.dart';
 import 'package:petroflow/models/sale_model.dart';
-import 'package:petroflow/pages/sales/edit_sale.dart';
-import 'package:petroflow/services/api_service.dart';
+import 'package:petroflow/pages/sales/sales_controller.dart';
+import 'package:provider/provider.dart';
 
 class SalesListPage extends StatefulWidget {
   @override
@@ -9,47 +10,46 @@ class SalesListPage extends StatefulWidget {
 }
 
 class _SalesListPageState extends State<SalesListPage> {
-  final ApiService _apiService = ApiService();
-  List<SaleModel> _sales = [];
   List<SaleModel> _filteredSales = [];
   String _searchQuery = "";
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchSales();
-  }
-
-  void _fetchSales() async {
-    try {
-      final response = await _apiService.getData('sales');
-      if (response is List) {
-        setState(() {
-          _sales = response.map((item) => SaleModel.fromJson(item)).toList();
-          _filteredSales = _sales;
-          _isLoading = false;
-        });
-      } else {
-        print("Failed to fetch sales data: Unexpected response format");
-      }
-    } catch (e) {
-      print("Error fetching sales data: $e");
-    }
+    _filteredSales = context.read<SalesController>().sales;
   }
 
   void _filterSales(String query) {
     setState(() {
       _searchQuery = query;
-      _filteredSales = _sales
+      _filteredSales = context
+          .read<SalesController>()
+          .sales
           .where((sale) =>
-              sale.product_name.toLowerCase().contains(query.toLowerCase()))
+              sale.productName
+                  .toString()
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()) ||
+              sale.unitsSold
+                  .toString()
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()) ||
+              sale.amountPaid
+                  .toString()
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()) ||
+              sale.paymentMethod
+                  .toString()
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()))
           .toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<SalesController>().isLoading;
+
     return Scaffold(
       appBar: AppBar(
         title: TextField(
@@ -60,23 +60,31 @@ class _SalesListPageState extends State<SalesListPage> {
           onChanged: _filterSales,
         ),
       ),
-      body: _isLoading
+      body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _filteredSales.length,
-              itemBuilder: (context, index) {
-                var sale = _filteredSales[index];
-                return ListTile(
-                  title:
-                      Text("${sale.product_name} - ${sale.units_sold} units"),
-                  subtitle: Text(
-                      "Paid: ${sale.total_amount_paid}, Mode: ${sale.mode_of_payment}"),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => EditSalePage(sale: sale)),
-                  ),
-                );
-              },
+          : Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 1.0),
+              child: PaginatedTable(
+                data: _filteredSales
+                    .map((sale) => {
+                          'Product Name': sale.productName,
+                          'Units Sold': sale.unitsSold,
+                          'Amount Paid': sale.amountPaid,
+                          'Payment Method': sale.paymentMethod,
+                          'Status': sale.status,
+                        })
+                    .toList(),
+                columns: [
+                  'Product Name',
+                  'Units Sold',
+                  'Amount Paid',
+                  'Payment Method',
+                  'Status'
+                ],
+                header: 'Sales Data',
+                numberOfRowsPerPage: 6,
+              ),
             ),
     );
   }

@@ -152,4 +152,10 @@ class DynamicColors {
         ? kDarkPrimaryColor
         : kLightPrimaryColor;
   }
+
+  static Color popupBackgroundColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? kDarkActiveCardColor
+        : Colors.white;
+  }
 }

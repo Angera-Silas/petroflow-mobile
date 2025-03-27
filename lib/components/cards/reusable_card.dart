@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:petroflow/constants/my_colors.dart';
 
 class ReusableCard extends StatelessWidget {
   const ReusableCard(
@@ -24,7 +25,7 @@ class ReusableCard extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.all(margin ?? 0.0),
         decoration: BoxDecoration(
-          color: colour,
+          color: colour ?? DynamicColors.homeCardColor(context),
           borderRadius: BorderRadius.circular(borderRadius ?? 0.0),
         ),
         child: cardChild,

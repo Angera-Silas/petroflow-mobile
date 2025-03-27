@@ -6,10 +6,12 @@ import 'package:petroflow/services/api_service.dart';
 import 'package:petroflow/services/db_service.dart';
 
 class SyncService {
-  static final AppDatabase _db = AppDatabase();
-  static final ApiService _apiService = ApiService();
+  final AppDatabase _db; // Use existing database instance
+  final ApiService _apiService = ApiService();
 
-  static Future<void> syncData() async {
+  SyncService(this._db);
+
+  Future<void> syncData() async {
     print("Checking for unsynced data...");
 
     List<UnsyncedData> unsyncedList = await _db.getUnsyncedData();
@@ -39,12 +41,12 @@ class SyncService {
           response = await _apiService.deleteData(
               data.endpoint, jsonDecode(data.data));
         }
-        if (response is http.Response && response.statusCode == 200 ||
-            response.statusCode == 201) {
+
+        if (response is http.Response &&
+            (response.statusCode == 200 || response.statusCode == 201)) {
           print("Synced data (ID: ${data.id}) to ${data.endpoint}");
           await _db.markAsSynced(data.id);
-        } else if (response is http.Response && response.statusCode != 200 ||
-            response.statusCode != 201) {
+        } else if (response is http.Response) {
           print("Failed to sync (ID: ${data.id}) - ${response.statusCode}");
         }
       } catch (e) {

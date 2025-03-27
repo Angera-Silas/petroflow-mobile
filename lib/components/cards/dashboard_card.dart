@@ -28,6 +28,7 @@ class DashboardCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
+        color: DynamicColors.homeCardColor(context),
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(

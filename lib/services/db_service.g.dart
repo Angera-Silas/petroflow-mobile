@@ -28,7 +28,9 @@ class $UnsyncedDataTableTable extends UnsyncedDataTable
   @override
   late final GeneratedColumn<String> data = GeneratedColumn<String>(
       'data', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: Constant('{}'));
   static const VerificationMeta _endpointMeta =
       const VerificationMeta('endpoint');
   @override
@@ -76,8 +78,6 @@ class $UnsyncedDataTableTable extends UnsyncedDataTable
     if (data.containsKey('data')) {
       context.handle(
           _dataMeta, this.data.isAcceptableOrUnknown(data['data']!, _dataMeta));
-    } else if (isInserting) {
-      context.missing(_dataMeta);
     }
     if (data.containsKey('endpoint')) {
       context.handle(_endpointMeta,
@@ -260,12 +260,11 @@ class UnsyncedDataTableCompanion extends UpdateCompanion<UnsyncedData> {
   UnsyncedDataTableCompanion.insert({
     this.id = const Value.absent(),
     required String myTableName,
-    required String data,
+    this.data = const Value.absent(),
     required String endpoint,
     required String method,
     this.synced = const Value.absent(),
   })  : myTableName = Value(myTableName),
-        data = Value(data),
         endpoint = Value(endpoint),
         method = Value(method);
   static Insertable<UnsyncedData> custom({
@@ -341,23 +340,287 @@ class UnsyncedDataTableCompanion extends UpdateCompanion<UnsyncedData> {
   }
 }
 
+class $DataFromBackendTableTable extends DataFromBackendTable
+    with TableInfo<$DataFromBackendTableTable, DataFromBackend> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DataFromBackendTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _myTableNameMeta =
+      const VerificationMeta('myTableName');
+  @override
+  late final GeneratedColumn<String> myTableName = GeneratedColumn<String>(
+      'my_table_name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumn<String> data = GeneratedColumn<String>(
+      'data', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: Constant('{}'));
+  static const VerificationMeta _endpointMeta =
+      const VerificationMeta('endpoint');
+  @override
+  late final GeneratedColumn<String> endpoint = GeneratedColumn<String>(
+      'endpoint', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, myTableName, data, endpoint];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'data_from_backend_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<DataFromBackend> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('my_table_name')) {
+      context.handle(
+          _myTableNameMeta,
+          myTableName.isAcceptableOrUnknown(
+              data['my_table_name']!, _myTableNameMeta));
+    } else if (isInserting) {
+      context.missing(_myTableNameMeta);
+    }
+    if (data.containsKey('data')) {
+      context.handle(
+          _dataMeta, this.data.isAcceptableOrUnknown(data['data']!, _dataMeta));
+    }
+    if (data.containsKey('endpoint')) {
+      context.handle(_endpointMeta,
+          endpoint.isAcceptableOrUnknown(data['endpoint']!, _endpointMeta));
+    } else if (isInserting) {
+      context.missing(_endpointMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DataFromBackend map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DataFromBackend(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      myTableName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}my_table_name'])!,
+      data: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}data'])!,
+      endpoint: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}endpoint'])!,
+    );
+  }
+
+  @override
+  $DataFromBackendTableTable createAlias(String alias) {
+    return $DataFromBackendTableTable(attachedDatabase, alias);
+  }
+}
+
+class DataFromBackend extends DataClass implements Insertable<DataFromBackend> {
+  final int id;
+  final String myTableName;
+  final String data;
+  final String endpoint;
+  const DataFromBackend(
+      {required this.id,
+      required this.myTableName,
+      required this.data,
+      required this.endpoint});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['my_table_name'] = Variable<String>(myTableName);
+    map['data'] = Variable<String>(data);
+    map['endpoint'] = Variable<String>(endpoint);
+    return map;
+  }
+
+  DataFromBackendTableCompanion toCompanion(bool nullToAbsent) {
+    return DataFromBackendTableCompanion(
+      id: Value(id),
+      myTableName: Value(myTableName),
+      data: Value(data),
+      endpoint: Value(endpoint),
+    );
+  }
+
+  factory DataFromBackend.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DataFromBackend(
+      id: serializer.fromJson<int>(json['id']),
+      myTableName: serializer.fromJson<String>(json['myTableName']),
+      data: serializer.fromJson<String>(json['data']),
+      endpoint: serializer.fromJson<String>(json['endpoint']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'myTableName': serializer.toJson<String>(myTableName),
+      'data': serializer.toJson<String>(data),
+      'endpoint': serializer.toJson<String>(endpoint),
+    };
+  }
+
+  DataFromBackend copyWith(
+          {int? id, String? myTableName, String? data, String? endpoint}) =>
+      DataFromBackend(
+        id: id ?? this.id,
+        myTableName: myTableName ?? this.myTableName,
+        data: data ?? this.data,
+        endpoint: endpoint ?? this.endpoint,
+      );
+  DataFromBackend copyWithCompanion(DataFromBackendTableCompanion data) {
+    return DataFromBackend(
+      id: data.id.present ? data.id.value : this.id,
+      myTableName:
+          data.myTableName.present ? data.myTableName.value : this.myTableName,
+      data: data.data.present ? data.data.value : this.data,
+      endpoint: data.endpoint.present ? data.endpoint.value : this.endpoint,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DataFromBackend(')
+          ..write('id: $id, ')
+          ..write('myTableName: $myTableName, ')
+          ..write('data: $data, ')
+          ..write('endpoint: $endpoint')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, myTableName, data, endpoint);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DataFromBackend &&
+          other.id == this.id &&
+          other.myTableName == this.myTableName &&
+          other.data == this.data &&
+          other.endpoint == this.endpoint);
+}
+
+class DataFromBackendTableCompanion extends UpdateCompanion<DataFromBackend> {
+  final Value<int> id;
+  final Value<String> myTableName;
+  final Value<String> data;
+  final Value<String> endpoint;
+  const DataFromBackendTableCompanion({
+    this.id = const Value.absent(),
+    this.myTableName = const Value.absent(),
+    this.data = const Value.absent(),
+    this.endpoint = const Value.absent(),
+  });
+  DataFromBackendTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String myTableName,
+    this.data = const Value.absent(),
+    required String endpoint,
+  })  : myTableName = Value(myTableName),
+        endpoint = Value(endpoint);
+  static Insertable<DataFromBackend> custom({
+    Expression<int>? id,
+    Expression<String>? myTableName,
+    Expression<String>? data,
+    Expression<String>? endpoint,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (myTableName != null) 'my_table_name': myTableName,
+      if (data != null) 'data': data,
+      if (endpoint != null) 'endpoint': endpoint,
+    });
+  }
+
+  DataFromBackendTableCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? myTableName,
+      Value<String>? data,
+      Value<String>? endpoint}) {
+    return DataFromBackendTableCompanion(
+      id: id ?? this.id,
+      myTableName: myTableName ?? this.myTableName,
+      data: data ?? this.data,
+      endpoint: endpoint ?? this.endpoint,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (myTableName.present) {
+      map['my_table_name'] = Variable<String>(myTableName.value);
+    }
+    if (data.present) {
+      map['data'] = Variable<String>(data.value);
+    }
+    if (endpoint.present) {
+      map['endpoint'] = Variable<String>(endpoint.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DataFromBackendTableCompanion(')
+          ..write('id: $id, ')
+          ..write('myTableName: $myTableName, ')
+          ..write('data: $data, ')
+          ..write('endpoint: $endpoint')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $UnsyncedDataTableTable unsyncedDataTable =
       $UnsyncedDataTableTable(this);
+  late final $DataFromBackendTableTable dataFromBackendTable =
+      $DataFromBackendTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [unsyncedDataTable];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [unsyncedDataTable, dataFromBackendTable];
 }
 
 typedef $$UnsyncedDataTableTableCreateCompanionBuilder
     = UnsyncedDataTableCompanion Function({
   Value<int> id,
   required String myTableName,
-  required String data,
+  Value<String> data,
   required String endpoint,
   required String method,
   Value<bool> synced,
@@ -502,7 +765,7 @@ class $$UnsyncedDataTableTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String myTableName,
-            required String data,
+            Value<String> data = const Value.absent(),
             required String endpoint,
             required String method,
             Value<bool> synced = const Value.absent(),
@@ -537,10 +800,169 @@ typedef $$UnsyncedDataTableTableProcessedTableManager = ProcessedTableManager<
     ),
     UnsyncedData,
     PrefetchHooks Function()>;
+typedef $$DataFromBackendTableTableCreateCompanionBuilder
+    = DataFromBackendTableCompanion Function({
+  Value<int> id,
+  required String myTableName,
+  Value<String> data,
+  required String endpoint,
+});
+typedef $$DataFromBackendTableTableUpdateCompanionBuilder
+    = DataFromBackendTableCompanion Function({
+  Value<int> id,
+  Value<String> myTableName,
+  Value<String> data,
+  Value<String> endpoint,
+});
+
+class $$DataFromBackendTableTableFilterComposer
+    extends Composer<_$AppDatabase, $DataFromBackendTableTable> {
+  $$DataFromBackendTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get myTableName => $composableBuilder(
+      column: $table.myTableName, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get data => $composableBuilder(
+      column: $table.data, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get endpoint => $composableBuilder(
+      column: $table.endpoint, builder: (column) => ColumnFilters(column));
+}
+
+class $$DataFromBackendTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $DataFromBackendTableTable> {
+  $$DataFromBackendTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get myTableName => $composableBuilder(
+      column: $table.myTableName, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get data => $composableBuilder(
+      column: $table.data, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get endpoint => $composableBuilder(
+      column: $table.endpoint, builder: (column) => ColumnOrderings(column));
+}
+
+class $$DataFromBackendTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DataFromBackendTableTable> {
+  $$DataFromBackendTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get myTableName => $composableBuilder(
+      column: $table.myTableName, builder: (column) => column);
+
+  GeneratedColumn<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<String> get endpoint =>
+      $composableBuilder(column: $table.endpoint, builder: (column) => column);
+}
+
+class $$DataFromBackendTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DataFromBackendTableTable,
+    DataFromBackend,
+    $$DataFromBackendTableTableFilterComposer,
+    $$DataFromBackendTableTableOrderingComposer,
+    $$DataFromBackendTableTableAnnotationComposer,
+    $$DataFromBackendTableTableCreateCompanionBuilder,
+    $$DataFromBackendTableTableUpdateCompanionBuilder,
+    (
+      DataFromBackend,
+      BaseReferences<_$AppDatabase, $DataFromBackendTableTable, DataFromBackend>
+    ),
+    DataFromBackend,
+    PrefetchHooks Function()> {
+  $$DataFromBackendTableTableTableManager(
+      _$AppDatabase db, $DataFromBackendTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DataFromBackendTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DataFromBackendTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DataFromBackendTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> myTableName = const Value.absent(),
+            Value<String> data = const Value.absent(),
+            Value<String> endpoint = const Value.absent(),
+          }) =>
+              DataFromBackendTableCompanion(
+            id: id,
+            myTableName: myTableName,
+            data: data,
+            endpoint: endpoint,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String myTableName,
+            Value<String> data = const Value.absent(),
+            required String endpoint,
+          }) =>
+              DataFromBackendTableCompanion.insert(
+            id: id,
+            myTableName: myTableName,
+            data: data,
+            endpoint: endpoint,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$DataFromBackendTableTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $DataFromBackendTableTable,
+        DataFromBackend,
+        $$DataFromBackendTableTableFilterComposer,
+        $$DataFromBackendTableTableOrderingComposer,
+        $$DataFromBackendTableTableAnnotationComposer,
+        $$DataFromBackendTableTableCreateCompanionBuilder,
+        $$DataFromBackendTableTableUpdateCompanionBuilder,
+        (
+          DataFromBackend,
+          BaseReferences<_$AppDatabase, $DataFromBackendTableTable,
+              DataFromBackend>
+        ),
+        DataFromBackend,
+        PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
   $$UnsyncedDataTableTableTableManager get unsyncedDataTable =>
       $$UnsyncedDataTableTableTableManager(_db, _db.unsyncedDataTable);
+  $$DataFromBackendTableTableTableManager get dataFromBackendTable =>
+      $$DataFromBackendTableTableTableManager(_db, _db.dataFromBackendTable);
 }

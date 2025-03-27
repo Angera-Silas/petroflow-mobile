@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:petroflow/components/cards/home_card.dart';
 import 'package:petroflow/pages/page_under_development.dart'
     show UnderDevelopmentPage;
+import 'package:petroflow/pages/sales/new_sale.dart';
 import 'package:petroflow/pages/sales/sales_page.dart' show SalesPage;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -210,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
         {
           'title': 'Add New Sale',
           'icon': Icons.add_shopping_cart,
-          'route': SalesPage(userRole: "CUSTOMER_ATTENDANT")
+          'route': NewSalePage()
         },
         {
           'title': 'View Sales',

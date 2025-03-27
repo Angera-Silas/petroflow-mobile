@@ -7,19 +7,21 @@ import 'package:petroflow/pages/home/home_controller.dart';
 import 'package:petroflow/pages/home/home_page.dart';
 import 'package:petroflow/pages/login_page.dart';
 import 'package:petroflow/pages/page_not_found.dart';
-import 'package:petroflow/pages/sales/sales_controller.dart'
-    show SalesController;
+import 'package:petroflow/pages/sales/sales_controller.dart';
 import 'package:petroflow/screens/otp_screen.dart';
 import 'package:petroflow/screens/splash_screen.dart';
 import 'package:petroflow/services/background_sync.dart';
 import 'package:petroflow/services/connectivity_service.dart';
+import 'package:petroflow/services/db_service.dart';
 import 'package:petroflow/services/notification_service.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  BackgroundSync.initialize(); // Initialize background sync
-  ConnectivityService.initBackgroundSync(); // Start auto-sync
+
+  final database = AppDatabase(); // Singleton database instance
+  BackgroundSync.initialize(database); // Initialize background sync
+  ConnectivityService.initBackgroundSync(database); // Start auto-sync
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -27,19 +29,21 @@ void main() async {
 
   NotificationService.initNotifications(); // Setup notifications
 
-  runApp(const PetroFlow());
+  runApp(PetroFlow(database)); // Pass database instance
 }
 
 class PetroFlow extends StatelessWidget {
-  const PetroFlow({super.key});
+  final AppDatabase _database; // Database instance for the app
+
+  const PetroFlow(this._database, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => HomeController()),
-        ChangeNotifierProvider(create: (_) => SalesController()),
-        // Add other providers here if needed
+        ChangeNotifierProvider(create: (_) => HomeController(_database)),
+        ChangeNotifierProvider(create: (_) => SalesController(_database)),
+        // Pass database
       ],
       child: MaterialApp(
         title: 'PetroFlow',
