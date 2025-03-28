@@ -100,7 +100,7 @@ class SalesController extends ChangeNotifier {
   }
 
   void _startAutoRefresh() {
-    _timer = Timer.periodic(const Duration(seconds: 45), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 60), (timer) {
       _fetchSalesData();
     });
   }

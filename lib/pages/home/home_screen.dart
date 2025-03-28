@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:petroflow/components/cards/home_card.dart';
+import 'package:petroflow/constants/my_colors.dart';
+import 'package:petroflow/pages/incidents/report_incident.dart';
+import 'package:petroflow/pages/incidents/view_incidents.dart';
 import 'package:petroflow/pages/page_under_development.dart'
     show UnderDevelopmentPage;
+import 'package:petroflow/pages/requests/create_request.dart';
+import 'package:petroflow/pages/requests/view_requests.dart';
+import 'package:petroflow/pages/sales/list_sales.dart';
 import 'package:petroflow/pages/sales/new_sale.dart';
 import 'package:petroflow/pages/sales/sales_page.dart' show SalesPage;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String? userRole;
+  String? username;
   bool isLoading = true;
 
   @override
@@ -27,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       userRole = prefs.getString('authRole') ?? 'user';
+      username = prefs.getString('username') ?? '';
       isLoading = false;
     });
   }
@@ -213,46 +221,55 @@ class _HomeScreenState extends State<HomeScreen> {
           'icon': Icons.add_shopping_cart,
           'route': NewSalePage()
         },
-        {
-          'title': 'View Sales',
-          'icon': Icons.edit,
-          'route': SalesPage(userRole: "CUSTOMER_ATTENDANT")
-        },
+        {'title': 'View Sales', 'icon': Icons.edit, 'route': SalesListPage()},
         {
           'title': 'My Performance',
           'icon': Icons.list,
           'route': SalesPage(userRole: "CUSTOMER_ATTENDANT")
         },
-        {
-          'title': 'Request Edit',
-          'icon': Icons.edit,
-          'route': SalesPage(userRole: "CUSTOMER_ATTENDANT")
-        },
-        {
-          'title': 'Flag Sale',
-          'icon': Icons.edit,
-          'route': SalesPage(userRole: "CUSTOMER_ATTENDANT")
-        },
+        // {
+        //   'title': 'Request Edit',
+        //   'icon': Icons.edit,
+        //   'route': SalesPage(userRole: "CUSTOMER_ATTENDANT")
+        // },
+        // {
+        //   'title': 'Flag Sale',
+        //   'icon': Icons.edit,
+        //   'route': SalesPage(userRole: "CUSTOMER_ATTENDANT")
+        // },
         {
           'title': 'Report Incident',
+          'icon': Icons.speaker_notes,
+          'route': ReportIncidentPage(),
+        },
+
+        {
+          'title': 'Manage Incidents',
           'icon': Icons.info_outlined,
-          'route': UnderDevelopmentPage(pageTitle: "Report Incident")
+          'route': ViewIncidentsPage(),
+        },
+
+        {
+          'title': 'Make Requests',
+          'icon': Icons.create,
+          'route': CreateRequestPage(),
         },
         {
           'title': 'Manage Requests',
           'icon': Icons.request_page,
-          'route': UnderDevelopmentPage(pageTitle: "Manage Requests")
+          'route': ViewRequestsPage(),
         },
+
         {
           'title': 'Sales Overview',
           'icon': Icons.pie_chart,
           'route': UnderDevelopmentPage(pageTitle: "Sales Overview")
         },
-        {
-          'title': 'Sales Tracking',
-          'icon': Icons.trending_up,
-          'route': UnderDevelopmentPage(pageTitle: "Sales Tracking")
-        },
+        // {
+        //   'title': 'Sales Tracking',
+        //   'icon': Icons.trending_up,
+        //   'route': UnderDevelopmentPage(pageTitle: "Sales Tracking")
+        // },
         {
           'title': 'Customer Service',
           'icon': Icons.support,
@@ -317,6 +334,18 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 30),
+                  // Welcome Text
+                  Text(
+                    "Hello ${username ?? ''}, Welcome Back!",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: DynamicColors.textColor(context),
+                      fontFamily: 'Pacifico',
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   // Cards Grid
                   GridView.builder(
                     shrinkWrap: true,
@@ -324,8 +353,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 15,
+                      mainAxisSpacing: 25,
                       childAspectRatio: 2.0,
                     ),
                     itemCount: items.length,

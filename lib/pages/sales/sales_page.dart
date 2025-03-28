@@ -191,63 +191,67 @@ class SalesPage extends StatelessWidget {
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 1.0,
-                  ),
-                  itemCount: salesOptions.length,
-                  itemBuilder: (context, index) {
-                    final item = salesOptions[index];
-                    return DashboardCard(
-                      title: item["title"] as String,
-                      icon: item["icon"] as IconData,
-                      iconSize: 35,
-                      titleFontSize: 14,
-                      valueFontSize: 0,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => item["route"] as Widget),
-                        );
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(height: 20),
-                controller.sales.isEmpty
-                    ? Center(
-                        child: Text(
-                          "No sales data available",
-                          style: TextStyle(
-                            color: DynamicColors.textColor(context),
-                          ),
-                        ),
-                      )
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: controller.sales.length,
-                        itemBuilder: (context, index) {
-                          final sale = controller.sales[index];
-                          return ListTile(
-                            title: Text("Amount: \$${sale.amountPaid}"),
-                            subtitle: Text("Date: ${sale.dateTime}"),
-                            trailing: sale.synced
-                                ? const Icon(Icons.check, color: Colors.green)
-                                : const Icon(Icons.sync, color: Colors.red),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 1.0,
+                    ),
+                    itemCount: salesOptions.length,
+                    itemBuilder: (context, index) {
+                      final item = salesOptions[index];
+                      return DashboardCard(
+                        title: item["title"] as String,
+                        icon: item["icon"] as IconData,
+                        iconSize: 35,
+                        titleFontSize: 14,
+                        valueFontSize: 0,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => item["route"] as Widget),
                           );
                         },
-                      ),
-              ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  controller.sales.isEmpty
+                      ? Center(
+                          child: Text(
+                            "No sales data available",
+                            style: TextStyle(
+                              color: DynamicColors.textColor(context),
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: controller.sales.length,
+                          itemBuilder: (context, index) {
+                            final sale = controller.sales[index];
+                            return ListTile(
+                              title: Text("Amount: \$${sale.amountPaid}"),
+                              subtitle: Text("Date: ${sale.dateTime}"),
+                              trailing: sale.synced
+                                  ? const Icon(Icons.check, color: Colors.green)
+                                  : const Icon(Icons.sync, color: Colors.red),
+                            );
+                          },
+                        ),
+                ],
+              ),
             ),
           );
         },

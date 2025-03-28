@@ -30,6 +30,7 @@ class ConnectivityService {
 }
 
 // WorkManager background task handler
+@pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     final database = AppDatabase(); // Create database instance

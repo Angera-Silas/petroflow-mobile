@@ -156,7 +156,7 @@ class _NewSalePageState extends State<NewSalePage> {
           title: Column(
             children: [
               Text(
-                "Sale Saved!",
+                "Sale Added Successfully!",
                 style: TextStyle(
                   color: Colors.green,
                   fontSize: 24.0,
@@ -173,122 +173,130 @@ class _NewSalePageState extends State<NewSalePage> {
               ),
             ],
           ),
-          content: Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Center(
-                  child: CircleAvatar(
-                    backgroundColor: Colors.green,
-                    radius: 30.0,
-                    child: Icon(
-                      Icons.check,
-                      color: Colors.white,
-                      size: 40.0,
-                    ),
-                  ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Product: ${_selectedProduct ?? 'Unknown'}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 16.0,
-                        color: DynamicColors.textColor(context),
-                      ),
-                    ),
-                    Text(
-                      "Units Sold: ${sale.unitsSold}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 16.0,
-                        color: DynamicColors.textColor(context),
-                      ),
-                    ),
-                    Text(
-                      "Amount Billed: ${sale.amountBilled}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                        color: DynamicColors.textColor(context),
-                      ),
-                    ),
-                    Text(
-                      "Amount Paid: ${sale.amountPaid}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                        color: DynamicColors.textColor(context),
-                      ),
-                    ),
-                    Text(
-                      "Payment Mode: ${sale.paymentMethod}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 16.0,
-                        color: DynamicColors.textColor(context),
-                      ),
-                    ),
-                    Text(
-                      "Payment Status: ${sale.paymentStatus}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 16.0,
-                        color: DynamicColors.textColor(context),
-                      ),
-                    ),
-                    Text(
-                      "Sell Point: ${_selectedSellPoint ?? 'Unknown'}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                        color: DynamicColors.textColor(context),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Sale By: ${_username}",
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-          actions: [
-            Container(
-              color: Colors.green,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Close the popup
-                    _resetForm(); // Reset the form
-                  },
-                  child: Text(
-                    "OK",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: CircleAvatar(
+                  backgroundColor: Colors.green,
+                  radius: 30.0,
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    size: 40.0,
                   ),
                 ),
               ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Product: ${_selectedProduct ?? 'Unknown'}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16.0,
+                      color: DynamicColors.textColor(context),
+                    ),
+                  ),
+                  Text(
+                    "Units Sold: ${sale.unitsSold}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16.0,
+                      color: DynamicColors.textColor(context),
+                    ),
+                  ),
+                  Text(
+                    "Amount Billed: ${sale.amountBilled}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                      color: DynamicColors.textColor(context),
+                    ),
+                  ),
+                  Text(
+                    "Amount Paid: ${sale.amountPaid}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                      color: DynamicColors.textColor(context),
+                    ),
+                  ),
+                  Text(
+                    "Payment Mode: ${sale.paymentMethod}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16.0,
+                      color: DynamicColors.textColor(context),
+                    ),
+                  ),
+                  Text(
+                    "Payment Status: ${sale.paymentStatus}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16.0,
+                      color: DynamicColors.textColor(context),
+                    ),
+                  ),
+                  Text(
+                    "Sell Point: ${_selectedSellPoint ?? 'Unknown'}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                      color: DynamicColors.textColor(context),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Sale By: ${_username}",
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+          actions: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    color: Colors.green,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4.0, horizontal: 10.0),
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Close the popup
+                            _resetForm(); // Reset the form
+                          },
+                          child: Text(
+                            "OK",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -352,15 +360,26 @@ class _NewSalePageState extends State<NewSalePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: false,
-        title: Text(
-          'New Sale',
-          style: TextStyle(
-            color: DynamicColors.textColor(context),
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+        automaticallyImplyLeading: true,
+        title: const Text(
+          "Record New Sale",
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        centerTitle: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              // Handle search button press
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {
+              // Handle notifications button press
+            },
+          ),
+        ],
       ),
       body: _isLoading
           ? Center(

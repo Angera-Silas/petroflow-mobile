@@ -65,6 +65,12 @@ class HomeController extends ChangeNotifier {
 
       employeeNo = userInfoResponse['employeeNo']?.toString() ?? '';
       facilityId = userInfoResponse['facilityId'] ?? 0;
+      final String username =
+          userInfoResponse['firstname'] + " " + userInfoResponse['lastname'] ??
+              '';
+
+      //save to shared preferences
+      prefs.setString('username', username);
 
       // ✅ Fetch active shift details
       final shiftResponse =

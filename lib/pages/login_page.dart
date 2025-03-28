@@ -104,6 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 20),
                 CustomTextFormField(
                   labelText: 'Password',
+                  maxLines: 1,
                   prefixIcon: Icons.lock,
                   controller: _passwordController,
                   obscureText: _obscurePassword,

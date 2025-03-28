@@ -44,8 +44,8 @@ class SaleModel {
   factory SaleModel.fromJson(Map<String, dynamic> json) {
     return SaleModel(
       id: json['id'],
-      dateTime: json['timestamp'] != null
-          ? DateTime.tryParse(json['timestamp']) ?? DateTime.now()
+      dateTime: json['dateTime'] != null
+          ? DateFormat('yyyy-MM-dd HH:mm:ss').parse(json['dateTime'])
           : DateTime.now(),
       productId: json['productId'] ?? 0,
       employeeNo: json['employeeNo'] ?? '',
